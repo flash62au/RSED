@@ -15,7 +15,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package jmri.enginedriver;
+package jmri.rsed;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -75,7 +75,7 @@ import android.widget.TextView.OnEditorActionListener;
 
 import java.io.PrintWriter;
 
-import jmri.enginedriver.Consist.ConLoco;
+import jmri.rsed.Consist.ConLoco;
 import jmri.jmrit.roster.RosterEntry;
 
 public class select_loco extends Activity {
@@ -560,7 +560,7 @@ public class select_loco extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mainapp = (threaded_application) getApplication();
-        prefs = getSharedPreferences("jmri.enginedriver_preferences", 0);
+        prefs = getSharedPreferences("jmri.rsed_preferences", 0);
         result = RESULT_CANCELED;
         if (mainapp.isForcingFinish()) {     // expedite
             return;

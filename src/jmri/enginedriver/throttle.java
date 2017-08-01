@@ -15,11 +15,14 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package jmri.enginedriver;
+package jmri.rsed;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -37,11 +40,16 @@ import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.lang.reflect.Method;
+import java.util.Set;
+import java.util.UUID;
 
-import jmri.enginedriver.logviewer.ui.LogViewerActivity;
+import jmri.rsed.logviewer.ui.LogViewerActivity;
 
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -50,6 +58,7 @@ import android.webkit.CookieSyncManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.Button;
@@ -258,6 +267,19 @@ public class throttle extends Activity implements android.gesture.GestureOverlay
 
     //Throttle Array
     private char[] allThrottleLetters = {'T', 'S', 'G'};
+
+    //R.S.E.D. --------------------------------
+    private final String DEVICE_NAME="HC-05";
+    private final UUID PORT_UUID = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");//Serial Port Service ID
+    private BluetoothDevice device;
+    private BluetoothSocket socket;
+    private OutputStream outputStream;
+    private InputStream inputStream;
+    boolean deviceConnected=false;
+    byte buffer[];
+    boolean stopThread;
+    //Thread thread;
+    //R.S.E.D. --------------------------------
 
     // For speed slider speed buttons.
     class RptUpdater implements Runnable {
@@ -1194,6 +1216,96 @@ public class throttle extends Activity implements android.gesture.GestureOverlay
         }
     }
 
+    //R.S.E.D. --------------------------------
+    void beginListenForData() {
+        char whichThrottle = whichVolume;
+
+        final Handler handler = new Handler();
+        stopThread = false;
+        buffer = new byte[1024];
+        Thread thread  = new Thread(new Runnable() {
+            public void run() {
+                while(!Thread.currentThread().isInterrupted() && !stopThread) {
+                    try {
+                        int byteCount = inputStream.available();
+                        if(byteCount > 0) {
+                            byte[] rawBytes = new byte[byteCount];
+                            char aChar;
+                            int i = 0;
+                            int j = 0;
+                            int kbInt = 0;
+
+                            inputStream.read(rawBytes);
+                            final String string=new String(rawBytes,"UTF-8");
+                            Log.d("Engine_Driver", "R.S.E.D.: " + string);
+                            for (j=0 ; j < string.length() ; j++) {
+                                aChar = string.charAt(j);
+                                if ((aChar == '=') || (aChar == '-')) { //start of throttle command or function
+                                    lastKeyChars[0] = (aChar == '=') ? '=': '*';
+                                    lastKeyCountNeedExtraKeys = (aChar == '=') ? 3: 2;
+                                    lastKeyCount = 1;
+                                } else {
+                                    if (lastKeyCount > 0) { // looking for a number of keys after the the '=' or '*'
+                                        if ((aChar>='0') || (aChar<='9')) { // got a valid digit
+                                            lastKeyChars[lastKeyCount] = aChar;
+                                            Log.d("Engine_Driver", "R.S.E.D.: " + lastKeyChars[0] + lastKeyChars[1] + lastKeyChars[2] + lastKeyChars[3]);
+                                            lastKeyCount++;
+                                            if (lastKeyCount == (lastKeyCountNeedExtraKeys+1)) {  // got all three/two digits
+                                                kbInt = 0;
+                                                for (i=1; i<=lastKeyCountNeedExtraKeys; i++) {kbInt = kbInt * 10 + Integer.parseInt("" + lastKeyChars[i]);}
+                                                if (lastKeyChars[0]=='=') { // speed setting
+                                                    speedUpdateAndNotify(whichThrottle, (MAX_SPEED_VAL_WIT * kbInt / 100));
+                                                    Log.d("Engine_Driver", "KB: " + getSpeed('T'));
+                                                    enable_disable_direction_and_loco_buttons(whichThrottle);
+                                                } else { // must be a function setting
+                                                    if (kbInt<=28) {  // otherwise just ignore it
+                                                        switch (whichThrottle) {
+                                                            case 'T': {
+                                                                mainapp.function_states_T[kbInt] = !mainapp.function_states_T[kbInt];
+                                                                break; }
+                                                            case 'G': {
+                                                                mainapp.function_states_G[kbInt] = !mainapp.function_states_G[kbInt];
+                                                                break; }
+                                                            default: {
+                                                                mainapp.function_states_S[kbInt] = !mainapp.function_states_S[kbInt];
+                                                                break; }
+                                                        }
+                                                        mainapp.sendMsg(mainapp.comm_msg_handler, message_type.FUNCTION, whichThrottle + "", kbInt, 1);
+                                                        set_function_state(whichThrottle, kbInt);
+                                                        vThrotScrWrap.playSoundEffect(SoundEffectConstants.CLICK);
+                                                    }
+                                                }
+                                                lastKeyChars[0] = ' ';
+                                                lastKeyCount = 0;
+                                                lastKeyCountNeedExtraKeys = 0;
+                                            }
+                                        } else { // invalid digit after after the the '=' or '*'
+                                            lastKeyChars[0] = ' ';
+                                            lastKeyCount = 0;
+                                            lastKeyCountNeedExtraKeys = 0;
+                                            // allow it to be processed in the rest of the function
+                                        }
+                                    } else {
+                                        // deal with the other keys... allow it to be processed in the rest of the function
+                                        lastKeyChars[0] = ' ';
+                                        lastKeyCount = 0;
+                                        lastKeyCountNeedExtraKeys = 0;
+                                    }
+
+                                }
+
+                            }
+                        }
+                    } catch (IOException ex) {
+                        stopThread = true;
+                    }
+                }
+            }
+        });
+        thread.start();
+    }
+    //R.S.E.D. --------------------------------
+
     // listener for physical keyboard events
     // used to support the gamepad in 'NewGame' mode only   DPAD and key events
     @Override
@@ -1714,13 +1826,85 @@ public class throttle extends Activity implements android.gesture.GestureOverlay
         speedChangeAndNotify(whichThrottle, BUTTON_SPEED_STEP);
     }
 
+    //R.S.E.D. --------------------------------
+    public boolean BTinit()
+    {
+        boolean found=false;
+        BluetoothAdapter bluetoothAdapter=BluetoothAdapter.getDefaultAdapter();
+        if (bluetoothAdapter == null) {
+            Toast.makeText(getApplicationContext(),"Device doesnt Support Bluetooth",Toast.LENGTH_SHORT).show();
+        }
+        if(!bluetoothAdapter.isEnabled())
+        {
+            Intent enableAdapter = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableAdapter, 0);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        Set<BluetoothDevice> bondedDevices = bluetoothAdapter.getBondedDevices();
+        if(bondedDevices.isEmpty())
+        {
+            Toast.makeText(getApplicationContext(),"Please Pair the Device first",Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            for (BluetoothDevice iterator : bondedDevices)
+            {
+                Toast.makeText(getApplicationContext(),iterator.getName(),Toast.LENGTH_LONG).show();
+                //if(iterator.getAddress().equals(DEVICE_ADDRESS))
+                if(iterator.getName().equals(DEVICE_NAME))
+                {
+                    device=iterator;
+                    //Toast.makeText(getApplicationContext(),device.getName(),Toast.LENGTH_SHORT).show();
+                    found=true;
+                    break;
+                }
+            }
+        }
+        return found;
+    }
+
+    public boolean BTconnect()
+    {
+        boolean connected=true;
+        try {
+            socket = device.createRfcommSocketToServiceRecord(PORT_UUID);
+            socket.connect();
+        } catch (IOException e) {
+            e.printStackTrace();
+            connected=false;
+        }
+        if(connected)
+        {
+            try {
+                outputStream=socket.getOutputStream();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                inputStream=socket.getInputStream();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+
+        return connected;
+    }
+    //R.S.E.D. --------------------------------
+
+
     @SuppressLint({"Recycle", "SetJavaScriptEnabled"})
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mainapp = (threaded_application) this.getApplication();
-        prefs = getSharedPreferences("jmri.enginedriver_preferences", 0);
+        prefs = getSharedPreferences("jmri.rsed_preferences", 0);
 
         if (mainapp.isForcingFinish()) { // expedite
             return;
@@ -1978,6 +2162,17 @@ public class throttle extends Activity implements android.gesture.GestureOverlay
         changeTimerT = new ChangeDelay('T');
         changeTimerG = new ChangeDelay('G');
         changeTimerS = new ChangeDelay('S');
+
+        //R.S.E.D. --------------------------------
+        if(BTinit()) {
+            if(BTconnect()) {
+//                setUiEnabled(true);
+                deviceConnected=true;
+                beginListenForData();
+//                textView.append("\nConnection Opened!\n");
+            }
+        }
+        //R.S.E.D. --------------------------------
 
     } // end of onCreate()
 

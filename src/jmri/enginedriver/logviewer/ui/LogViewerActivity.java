@@ -1,4 +1,4 @@
-package jmri.enginedriver.logviewer.ui;
+package jmri.rsed.logviewer.ui;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -6,8 +6,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import jmri.enginedriver.R;
-import jmri.enginedriver.threaded_application;
+import jmri.rsed.R;
+import jmri.rsed.threaded_application;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
@@ -36,7 +36,7 @@ public class LogViewerActivity extends ListActivity{
 
 	public void setTitleToIncludeThrotName()
 	{
-		SharedPreferences prefs  = getSharedPreferences("jmri.enginedriver_preferences", 0);
+		SharedPreferences prefs  = getSharedPreferences("jmri.rsed_preferences", 0);
 		String defaultName = getApplicationContext().getResources().getString(R.string.prefThrottleNameDefaultValue);
 		setTitle("LogViewerActivity" + "    |    Throttle Name: " + 
 				prefs.getString("throttle_name_preference", defaultName));

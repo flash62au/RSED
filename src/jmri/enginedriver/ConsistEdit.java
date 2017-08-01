@@ -15,12 +15,12 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package jmri.enginedriver;
+package jmri.rsed;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import jmri.enginedriver.Consist.ConLoco;
+import jmri.rsed.Consist.ConLoco;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;

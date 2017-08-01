@@ -16,7 +16,7 @@ public interface NameRegister {
     /**
      *
      */
-    public enum NameType {
+    enum NameType {
         /**
          * This name represents a host name
          */
@@ -27,7 +27,7 @@ public interface NameRegister {
         SERVICE,
     }
 
-    public static abstract class BaseRegister implements NameRegister {
+    abstract class BaseRegister implements NameRegister {
 
         protected String incrementNameWithDash(String name) {
             StringBuilder givenName = new StringBuilder(name.length() + 5);
@@ -79,7 +79,7 @@ public interface NameRegister {
 
     }
 
-    public static class UniqueNamePerInterface extends BaseRegister {
+    class UniqueNamePerInterface extends BaseRegister {
 
         private final ConcurrentMap<InetAddress, String>      _hostNames;
         private final ConcurrentMap<InetAddress, Set<String>> _serviceNames;
@@ -144,7 +144,7 @@ public interface NameRegister {
 
     }
 
-    public static class UniqueNameAcrossInterface extends BaseRegister {
+    class UniqueNameAcrossInterface extends BaseRegister {
 
         /*
          * (non-Javadoc)
@@ -198,7 +198,7 @@ public interface NameRegister {
 
     }
 
-    public static class Factory {
+    class Factory {
 
         private static volatile NameRegister _register;
 
@@ -243,7 +243,7 @@ public interface NameRegister {
      * @param type
      *            name type to register
      */
-    public abstract void register(InetAddress networkInterface, String name, NameType type);
+    void register(InetAddress networkInterface, String name, NameType type);
 
     /**
      * Checks a name that is defended by this group of mDNS.
@@ -256,7 +256,7 @@ public interface NameRegister {
      *            name type to check
      * @return <code>true</code> if the name is not in conflict, <code>flase</code> otherwise.
      */
-    public abstract boolean checkName(InetAddress networkInterface, String name, NameType type);
+    boolean checkName(InetAddress networkInterface, String name, NameType type);
 
     /**
      * Increments a name that is defended by this group of mDNS after it has been found in conflict.
@@ -269,6 +269,6 @@ public interface NameRegister {
      *            name type to increments
      * @return new name
      */
-    public abstract String incrementName(InetAddress networkInterface, String name, NameType type);
+    String incrementName(InetAddress networkInterface, String name, NameType type);
 
 }

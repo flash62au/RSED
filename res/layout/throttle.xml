@@ -849,6 +849,12 @@
                     </TableLayout>
                 </ScrollView>
             </LinearLayout>
+            <LinearLayout
+                android:id="@+id/simulatorScreen"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+            </LinearLayout>
         </LinearLayout>
     </android.gesture.GestureOverlayView>
     <WebView

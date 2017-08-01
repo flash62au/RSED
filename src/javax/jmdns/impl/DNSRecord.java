@@ -110,10 +110,7 @@ public abstract class DNSRecord extends DNSEntry {
      * True if this record would be suppressed by an answer. This is the case if this record would not have a significantly longer TTL.
      */
     boolean suppressedBy(DNSRecord other) {
-        if (this.equals(other) && (other._ttl > _ttl / 2)) {
-            return true;
-        }
-        return false;
+        return this.equals(other) && (other._ttl > _ttl / 2);
     }
 
     /**

@@ -15,7 +15,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package jmri.enginedriver;
+package jmri.rsed;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -279,7 +279,7 @@ public class connection_activity extends Activity {
         //check for "default" throttle name and make it more unique
         //TODO: move this and similar code in preferences.java into single routine
 
-        prefs = getSharedPreferences("jmri.enginedriver_preferences", 0);
+        prefs = getSharedPreferences("jmri.rsed_preferences", 0);
         String defaultName = getApplicationContext().getResources().getString(R.string.prefThrottleNameDefaultValue);
         String s = prefs.getString("throttle_name_preference", defaultName);
         if (s.trim().equals("") || s.equals(defaultName)) {
@@ -385,7 +385,7 @@ public class connection_activity extends Activity {
     }
 
     private void set_labels() {
-        SharedPreferences prefs = getSharedPreferences("jmri.enginedriver_preferences", 0);
+        SharedPreferences prefs = getSharedPreferences("jmri.rsed_preferences", 0);
         TextView v = (TextView) findViewById(R.id.ca_footer);
         String s = prefs.getString("throttle_name_preference", this.getResources().getString(R.string.prefThrottleNameDefaultValue));
         v.setText(getString(R.string.throttle_name, s));
@@ -476,7 +476,7 @@ public class connection_activity extends Activity {
                 //Write selected connection to file, then write all others (skipping selected if found)
                 list_output.format("%s:%s:%d\n", connected_hostname, connected_hostip, connected_port);
 
-                SharedPreferences prefs = getSharedPreferences("jmri.enginedriver_preferences", 0);
+                SharedPreferences prefs = getSharedPreferences("jmri.rsed_preferences", 0);
                 String smrc = prefs.getString("maximum_recent_connections_preference", ""); //retrieve pref for max recents to show
                 if (smrc.equals("")) { //if no value or entry removed, set to default
                     smrc = getApplicationContext().getResources().getString(R.string.prefMaximumRecentConnectionsDefaultValue);

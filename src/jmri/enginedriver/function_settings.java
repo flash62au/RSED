@@ -15,7 +15,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package jmri.enginedriver;
+package jmri.rsed;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -52,7 +52,7 @@ public class function_settings extends Activity {
 
 
     public void setTitleToIncludeThrotName() {
-        SharedPreferences prefs = getSharedPreferences("jmri.enginedriver_preferences", 0);
+        SharedPreferences prefs = getSharedPreferences("jmri.rsed_preferences", 0);
         String defaultName = getApplicationContext().getResources().getString(R.string.prefThrottleNameDefaultValue);
         setTitle(getApplicationContext().getResources().getString(R.string.app_name_functions) + "    |    Throttle Name: " +
                 prefs.getString("throttle_name_preference", defaultName));

@@ -15,7 +15,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package jmri.enginedriver;
+package jmri.rsed;
 
 import java.util.HashMap;
 
@@ -48,7 +48,7 @@ public class about_page extends Activity {
         String s;
         // ED version info
         try {
-            s = "Engine Driver: v"
+            s = "RSED: v"
                     + mainapp.getPackageManager().getPackageInfo(mainapp.getPackageName(), 0).versionName;
         } catch (Exception e) {
             s = "";

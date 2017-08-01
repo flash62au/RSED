@@ -22,7 +22,7 @@ public abstract class JmDNS implements Closeable {
     /**
      *
      */
-    public static interface Delegate {
+    public interface Delegate {
 
         /**
          * This method is called if JmDNS cannot recover from an I/O error.
@@ -32,7 +32,7 @@ public abstract class JmDNS implements Closeable {
          * @param infos
          *            service info registered with the DNS
          */
-        public void cannotRecoverFromIOError(JmDNS dns, Collection<ServiceInfo> infos);
+        void cannotRecoverFromIOError(JmDNS dns, Collection<ServiceInfo> infos);
 
     }
 

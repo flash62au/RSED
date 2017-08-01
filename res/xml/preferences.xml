@@ -147,6 +147,15 @@
             android:key="prefGamePadStartButton"
             android:summary="@string/prefGamePadStartButtonSummary"
             android:title="@string/prefGamePadStartButtonTitle" />
+        <EditTextPreference
+            android:defaultValue="@string/prefRsedBluetoothDeviceDefaulValue"
+            android:dialogTitle="@string/prefRsedBluetoothDeviceTitle"
+            android:key="left_slider_margin"
+            android:maxLength="25"
+            android:inputType="text"
+            android:maxLines="1"
+            android:summary="@string/prefRsedBluetoothDeviceSummary"
+            android:title="@string/prefRsedBluetoothDeviceTitle" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/prefThrottleTitle" >
         <ListPreference

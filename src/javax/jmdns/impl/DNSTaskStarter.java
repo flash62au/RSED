@@ -33,7 +33,7 @@ public interface DNSTaskStarter {
     /**
      * DNSTaskStarter.Factory enable the creation of new instance of DNSTaskStarter.
      */
-    public static final class Factory {
+    final class Factory {
 
         private static volatile Factory                        _instance;
         private final ConcurrentMap<JmDNSImpl, DNSTaskStarter> _instances;
@@ -41,7 +41,7 @@ public interface DNSTaskStarter {
         /**
          * This interface defines a delegate to the DNSTaskStarter class to enable subclassing.
          */
-        public static interface ClassDelegate {
+        public interface ClassDelegate {
 
             /**
              * Allows the delegate the opportunity to construct and return a different DNSTaskStarter.
@@ -52,7 +52,7 @@ public interface DNSTaskStarter {
              * @see #classDelegate()
              * @see #setClassDelegate(ClassDelegate anObject)
              */
-            public DNSTaskStarter newDNSTaskStarter(JmDNSImpl jmDNSImpl);
+            DNSTaskStarter newDNSTaskStarter(JmDNSImpl jmDNSImpl);
         }
 
         private static final AtomicReference<Factory.ClassDelegate> _databaseClassDelegate = new AtomicReference<Factory.ClassDelegate>();
@@ -145,7 +145,7 @@ public interface DNSTaskStarter {
 
     }
 
-    public static final class DNSTaskStarterImpl implements DNSTaskStarter {
+    final class DNSTaskStarterImpl implements DNSTaskStarter {
 
         private final JmDNSImpl _jmDNSImpl;
 
@@ -398,47 +398,47 @@ public interface DNSTaskStarter {
     /**
      * Purge the general task timer
      */
-    public void purgeTimer();
+    void purgeTimer();
 
     /**
      * Purge the state task timer
      */
-    public void purgeStateTimer();
+    void purgeStateTimer();
 
     /**
      * Cancel the generals task timer
      */
-    public void cancelTimer();
+    void cancelTimer();
 
     /**
      * Cancel the state task timer
      */
-    public void cancelStateTimer();
+    void cancelStateTimer();
 
     /**
      * Start a new prober task
      */
-    public void startProber();
+    void startProber();
 
     /**
      * Start a new announcer task
      */
-    public void startAnnouncer();
+    void startAnnouncer();
 
     /**
      * Start a new renewer task
      */
-    public void startRenewer();
+    void startRenewer();
 
     /**
      * Start a new canceler task
      */
-    public void startCanceler();
+    void startCanceler();
 
     /**
      * Start a new reaper task. There is only supposed to be one reaper running at a time.
      */
-    public void startReaper();
+    void startReaper();
 
     /**
      * Start a new service info resolver task
@@ -446,12 +446,12 @@ public interface DNSTaskStarter {
      * @param info
      *            service info to resolve
      */
-    public void startServiceInfoResolver(ServiceInfoImpl info);
+    void startServiceInfoResolver(ServiceInfoImpl info);
 
     /**
      * Start a new service type resolver task
      */
-    public void startTypeResolver();
+    void startTypeResolver();
 
     /**
      * Start a new service resolver task
@@ -459,7 +459,7 @@ public interface DNSTaskStarter {
      * @param type
      *            service type to resolve
      */
-    public void startServiceResolver(String type);
+    void startServiceResolver(String type);
 
     /**
      * Start a new responder task
@@ -469,6 +469,6 @@ public interface DNSTaskStarter {
      * @param port
      *            incoming port
      */
-    public void startResponder(DNSIncoming in, int port);
+    void startResponder(DNSIncoming in, int port);
 
 }

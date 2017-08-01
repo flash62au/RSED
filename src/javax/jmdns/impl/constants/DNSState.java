@@ -70,7 +70,7 @@ public enum DNSState {
 
     private final StateClass _state;
 
-    private DNSState(String name, StateClass state) {
+    DNSState(String name, StateClass state) {
         _name = name;
         _state = state;
     }

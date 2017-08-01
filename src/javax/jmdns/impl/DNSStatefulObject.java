@@ -30,7 +30,7 @@ public interface DNSStatefulObject {
      *
      * @author Pierre Frisch
      */
-    public static final class DNSStatefulObjectSemaphore {
+    final class DNSStatefulObjectSemaphore {
         private static Logger                          logger = Logger.getLogger(DNSStatefulObjectSemaphore.class.getName());
 
         private final String                           _name;
@@ -102,7 +102,7 @@ public interface DNSStatefulObject {
 
     }
 
-    public static class DefaultImplementation extends ReentrantLock implements DNSStatefulObject {
+    class DefaultImplementation extends ReentrantLock implements DNSStatefulObject {
         private static Logger                    logger           = Logger.getLogger(DefaultImplementation.class.getName());
 
         private static final long                serialVersionUID = -3264781576883412227L;
@@ -432,7 +432,7 @@ public interface DNSStatefulObject {
      *
      * @return DNS resolver
      */
-    public JmDNSImpl getDns();
+    JmDNSImpl getDns();
 
     /**
      * Sets the task associated with this Object.
@@ -442,7 +442,7 @@ public interface DNSStatefulObject {
      * @param state
      *            state of the task
      */
-    public void associateWithTask(DNSTask task, DNSState state);
+    void associateWithTask(DNSTask task, DNSState state);
 
     /**
      * Remove the association of the task with this Object.
@@ -450,7 +450,7 @@ public interface DNSStatefulObject {
      * @param task
      *            associated task
      */
-    public void removeAssociationWithTask(DNSTask task);
+    void removeAssociationWithTask(DNSTask task);
 
     /**
      * Checks if this object is associated with the task and in the same state.
@@ -461,7 +461,7 @@ public interface DNSStatefulObject {
      *            state of the task
      * @return <code>true</code> is the task is associated with this object, <code>false</code> otherwise.
      */
-    public boolean isAssociatedWithTask(DNSTask task, DNSState state);
+    boolean isAssociatedWithTask(DNSTask task, DNSState state);
 
     /**
      * Sets the state and notifies all objects that wait on the ServiceInfo.
@@ -471,7 +471,7 @@ public interface DNSStatefulObject {
      * @return <code>true</code if the state was changed by this thread, <code>false</code> otherwise.
      * @see DNSState#advance()
      */
-    public boolean advanceState(DNSTask task);
+    boolean advanceState(DNSTask task);
 
     /**
      * Sets the state and notifies all objects that wait on the ServiceInfo.
@@ -479,77 +479,77 @@ public interface DNSStatefulObject {
      * @return <code>true</code if the state was changed by this thread, <code>false</code> otherwise.
      * @see DNSState#revert()
      */
-    public boolean revertState();
+    boolean revertState();
 
     /**
      * Sets the state and notifies all objects that wait on the ServiceInfo.
      *
      * @return <code>true</code if the state was changed by this thread, <code>false</code> otherwise.
      */
-    public boolean cancelState();
+    boolean cancelState();
 
     /**
      * Sets the state and notifies all objects that wait on the ServiceInfo.
      *
      * @return <code>true</code if the state was changed by this thread, <code>false</code> otherwise.
      */
-    public boolean closeState();
+    boolean closeState();
 
     /**
      * Sets the state and notifies all objects that wait on the ServiceInfo.
      *
      * @return <code>true</code if the state was changed by this thread, <code>false</code> otherwise.
      */
-    public boolean recoverState();
+    boolean recoverState();
 
     /**
      * Returns true, if this is a probing state.
      *
      * @return <code>true</code> if probing state, <code>false</code> otherwise
      */
-    public boolean isProbing();
+    boolean isProbing();
 
     /**
      * Returns true, if this is an announcing state.
      *
      * @return <code>true</code> if announcing state, <code>false</code> otherwise
      */
-    public boolean isAnnouncing();
+    boolean isAnnouncing();
 
     /**
      * Returns true, if this is an announced state.
      *
      * @return <code>true</code> if announced state, <code>false</code> otherwise
      */
-    public boolean isAnnounced();
+    boolean isAnnounced();
 
     /**
      * Returns true, if this is a canceling state.
      *
      * @return <code>true</code> if canceling state, <code>false</code> otherwise
      */
-    public boolean isCanceling();
+    boolean isCanceling();
 
     /**
      * Returns true, if this is a canceled state.
      *
      * @return <code>true</code> if canceled state, <code>false</code> otherwise
      */
-    public boolean isCanceled();
+    boolean isCanceled();
 
     /**
      * Returns true, if this is a closing state.
      *
      * @return <code>true</code> if closing state, <code>false</code> otherwise
      */
-    public boolean isClosing();
+    boolean isClosing();
 
     /**
      * Returns true, if this is a closed state.
      *
      * @return <code>true</code> if closed state, <code>false</code> otherwise
      */
-    public boolean isClosed();
+    boolean isClosed();
 
     /**
      * Waits for the object to be announced.
@@ -558,7 +558,7 @@ public interface DNSStatefulObject {
      *            the maximum time to wait in milliseconds.
      * @return <code>true</code> if the object is announced, <code>false</code> otherwise
      */
-    public boolean waitForAnnounced(long timeout);
+    boolean waitForAnnounced(long timeout);
 
     /**
      * Waits for the object to be canceled.
@@ -567,6 +567,6 @@ public interface DNSStatefulObject {
      *            the maximum time to wait in milliseconds.
      * @return <code>true</code> if the object is canceled, <code>false</code> otherwise
      */
-    public boolean waitForCanceled(long timeout);
+    boolean waitForCanceled(long timeout);
 
 }

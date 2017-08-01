@@ -65,9 +65,9 @@ public class ServiceInfoImpl extends ServiceInfo implements DNSListener, DNSStat
 
     private Delegate                _delegate;
 
-    public static interface Delegate {
+    public interface Delegate {
 
-        public void textValueUpdated(ServiceInfo target, byte[] value);
+        void textValueUpdated(ServiceInfo target, byte[] value);
 
     }
 
@@ -713,7 +713,7 @@ public class ServiceInfoImpl extends ServiceInfo implements DNSListener, DNSStat
     @Override
     public Enumeration<String> getPropertyNames() {
         Map<String, byte[]> properties = this.getProperties();
-        Collection<String> names = (properties != null ? properties.keySet() : Collections.<String> emptySet());
+        Collection<String> names = (properties != null ? properties.keySet() : Collections.emptySet());
         return new Vector<String>(names).elements();
     }
 
@@ -871,7 +871,7 @@ public class ServiceInfoImpl extends ServiceInfo implements DNSListener, DNSStat
             }
             this._props = properties;
         }
-        return (_props != null ? _props : Collections.<String, byte[]> emptyMap());
+        return (_props != null ? _props : Collections.emptyMap());
     }
 
     /**

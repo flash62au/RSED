@@ -15,7 +15,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-package jmri.enginedriver;
+package jmri.rsed;
 
 import java.lang.reflect.Method;
 
@@ -131,7 +131,7 @@ public class web_activity extends Activity {
         super.onCreate(savedInstanceState);
 
         mainapp = (threaded_application) this.getApplication();
-        prefs = getSharedPreferences("jmri.enginedriver_preferences", 0);
+        prefs = getSharedPreferences("jmri.rsed_preferences", 0);
         if (mainapp.isForcingFinish()) {        // expedite
             return;
         }

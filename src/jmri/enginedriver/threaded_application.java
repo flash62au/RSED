@@ -16,7 +16,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package jmri.enginedriver;
+package jmri.rsed;
 
 // Main java file.
 /* TODO: see changelog-and-todo-list.txt for complete list of project to-do's */
@@ -71,8 +71,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import jmri.enginedriver.Consist.ConLoco;
-import jmri.enginedriver.threaded_application.comm_thread.comm_handler;
+import jmri.rsed.Consist.ConLoco;
+import jmri.rsed.threaded_application.comm_thread.comm_handler;
 import jmri.jmrit.roster.RosterEntry;
 import jmri.jmrit.roster.RosterLoader;
 
@@ -1820,7 +1820,7 @@ public class threaded_application extends Application {
 
 
         androidVersion = android.os.Build.VERSION.SDK_INT;
-        prefs = getSharedPreferences("jmri.enginedriver_preferences", 0);
+        prefs = getSharedPreferences("jmri.rsed_preferences", 0);
 
         function_states_T = new boolean[32];
         function_states_S = new boolean[32];
