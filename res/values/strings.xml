@@ -244,5 +244,5 @@
     <string name="throttle_name">Throttle Name: %1$s</string>
     <string name="prefRsedBluetoothDeviceDefaulValue"></string>
     <string name="prefRsedBluetoothDeviceTitle">Bluetooth Device Name?</string>
-    <string name="prefRsedBluetoothDeviceSummary">Device ID. Blank for none.</string>
+    <string name="prefRsedBluetoothDeviceSummary">Device ID. Blank for none.  Requires a restart of the app.</string>
 </resources>
